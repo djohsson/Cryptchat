@@ -12,5 +12,8 @@ def main():
     a = alice.gensessionkey(bob.publickey)
     b = bob.gensessionkey(alice.publickey)
 
+    print("Alice's AES key: " + a)
+    print("Bobs's AES key: " + b)
+
 if __name__ == "__main__":
     main()
