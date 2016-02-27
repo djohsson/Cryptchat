@@ -1,7 +1,7 @@
-#/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import base64
+from base64 import b64encode, b64decode
 from Crypto import Random
 from Crypto.Cipher import AES
 
@@ -9,23 +9,16 @@ from Crypto.Cipher import AES
 class AESCipher():
 
     def __init__(self, key):
-        self.key = base64.b64decode(key)
-        self.bs = 16
+        self.key = b64decode(key)
 
     def encrypt(self, m):
-        m = self.pad(m)
         iv = Random.new().read(AES.block_size)
-        cipher = AES.new(self.key, AES.MODE_CBC, iv)
-        return base64.b64encode(iv + cipher.encrypt(m))
+        cipher = AES.new(self.key, AES.MODE_CFB, iv)
+        return b64encode(iv + cipher.encrypt(m)).decode('utf8')
+
 
     def decrypt(self, c):
-        c = base64.b64decode(c)
+        c = b64decode(c)
         iv = c[:AES.block_size]
-        cipher = AES.new(self.key, AES.MODE_CBC, iv)
-        return self.unpad(cipher.decrypt(c[AES.block_size:]))
-
-    def pad(self, s):
-        return s + (self.bs - len(s) % self.bs) * chr(self.bs - len(s) % self.bs)
-
-    def unpad(self, s):
-        return s[:-ord(s[len(s)-1:])]
+        cipher = AES.new(self.key, AES.MODE_CFB, iv)
+        return cipher.decrypt(c[AES.block_size:]).decode('utf8')

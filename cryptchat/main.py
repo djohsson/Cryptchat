@@ -1,4 +1,4 @@
-#/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 from crypto.diffiehellman import DiffieHellman
@@ -13,8 +13,7 @@ def main():
     b = bob.gensessionkey(alice.publickey)
 
     test = AESCipher(a)
-    m = u"This is a private message please do not read 「秘密です」"
-    m = m.encode('utf8')
+    m = "åäö"
     c = test.encrypt(m)
     m2 = test.decrypt(c)
     print("Plaintext: " + m)

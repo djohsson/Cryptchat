@@ -1,7 +1,7 @@
-#/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Run from Cryptchat
-# python -m unittest discover
+# python3 -m unittest discover
 
 import unittest
 from ..crypto.diffiehellman import DiffieHellman

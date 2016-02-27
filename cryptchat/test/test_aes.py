@@ -1,7 +1,7 @@
-#/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Run from Cryptchat
-# python -m unittest discover
+# python3 -m unittest discover
 
 import unittest
 from ..crypto.aes import AESCipher
@@ -20,7 +20,7 @@ class testAESCipher(unittest.TestCase):
     def test_encrypt_decrypt_unicode(self):
         key = "TTTcPolAhIqZZJY0IOH7Orecb/EEaUx8/u/pQlCgma8="
         cipher = AESCipher(key)
-        m = u"『秘密』K-popは好きです".encode('utf8')
+        m = "『秘密』K-popは好きです"
         c = cipher.encrypt(m)
         m2 = cipher.decrypt(c)
         self.assertEqual(m, m2)
