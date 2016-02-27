@@ -9,15 +9,20 @@ from ..crypto.diffiehellman import DiffieHellman
 
 class testDiffieHellman(unittest.TestCase):
 
-    def test_initiatevalid(self):
-        alice = DiffieHellman(group=5)
-        self.assertTrue(alice.keysize == 240)
+    def test_privatekeysize(self):
+        testgroups = [5, 14, 16, 17, 18]
+        for group in testgroups:
+            alice = DiffieHellman(group=group)
+            self.assertTrue(alice.privatekey.bit_length() == alice.keysize)
 
-        alice = DiffieHellman(group=17)
-        self.assertTrue(alice.keysize == 540)
-
-        alice = DiffieHellman(group=18)
-        self.assertTrue(alice.keysize == 620)
+    def test_equalsessionkey(self):
+        testgroups = [5, 17]
+        for group in testgroups:
+            alice = DiffieHellman(group=group)
+            bob = DiffieHellman(group=group)
+            a = alice.gensessionkey(bob.publickey)
+            b = bob.gensessionkey(alice.publickey)
+            self.assertEqual(a, b)
 
 def main():
     unittest.main()

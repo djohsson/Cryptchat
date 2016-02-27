@@ -61,9 +61,10 @@ class DiffieHellman():
         return pow(self.generator, self.privatekey, self.prime)
 
     def gensessionkey(self, bobkey):
-        secretkey = pow(bobkey, self.privatekey, self.prime)
+        secretkey = str(pow(bobkey, self.privatekey, self.prime))
+        secretkey = secretkey.encode('utf-8')
         h = hashlib.sha256()
-        h.update(str(secretkey))
+        h.update(secretkey)
         m = h.hexdigest()
         if self.keysize <= 480:
             print("Private key is too small for AES-256, going with AES-128")
