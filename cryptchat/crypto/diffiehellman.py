@@ -65,9 +65,9 @@ class DiffieHellman():
         secretkey = secretkey.encode('utf-8')
         h = hashlib.sha256()
         h.update(secretkey)
-        m = h.hexdigest()
+        m = h.digest()
         if self.keysize <= 480:
             print("Private key is too small for AES-256, going with AES-128")
-            m = m[:32]
+            m = m[:round(len(m)/2)]
 
         return m
