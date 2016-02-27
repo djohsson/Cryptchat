@@ -52,7 +52,10 @@ class DiffieHellman():
             return keysizes[standardgroup]
 
     def genprivatekey(self):
-        return getrandbits(self.keysize)
+        randbits = 0
+        while randbits.bit_length() < self.keysize:
+            randbits = getrandbits(self.keysize)
+        return randbits
 
     def genpublickey(self):
         return pow(self.generator, self.privatekey, self.prime)
