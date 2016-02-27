@@ -1,4 +1,4 @@
-#/usr/bin/python3
+#/usr/bin/python
 # -*- coding: utf-8 -*-
 
 import base64
@@ -9,7 +9,7 @@ from Crypto.Cipher import AES
 class AESCipher():
 
     def __init__(self, key):
-        self.key = key
+        self.key = base64.b64decode(key)
         self.bs = 16
 
     def encrypt(self, m):

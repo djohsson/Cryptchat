@@ -1,8 +1,9 @@
-#/usr/bin/python3
+#/usr/bin/python
 # -*- coding: utf-8 -*-
 
 from random import getrandbits
 import hashlib
+import base64
 
 
 standardgroup = 17
@@ -68,6 +69,6 @@ class DiffieHellman():
         m = h.digest()
         if self.keysize <= 480:
             print("Private key is too small for AES-256, going with AES-128")
-            m = m[:round(len(m)/2)]
+            m = m[:int(round(len(m)/2))]
 
-        return m
+        return base64.b64encode(m)
