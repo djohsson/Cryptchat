@@ -10,12 +10,17 @@ class ReadThread(threading.Thread):
     global RECV_BUFFER
 
     def __init__(self, networkhandler, connection):
-        self.connection = connection
+        super(ReadThread, self).__init__()
         self.networkhandler = networkhandler
-        threading.Thread.__init__(self)
+        self.connection = connection
+        self._stop = threading.Event()
+        self.setDaemon(True)
 
     def run(self):
         while True:
-            m = self.connection.recv(RECV_BUFFER)
+            m = self.connection.recv(RECV_BUFFER).decode("utf8")
             if len(m) > 0:
-                self.networkhandler.receive(m.decode("utf8"))
+                self.networkhandler.receive(m)
+
+    def stop(self):
+        self._stop.set()

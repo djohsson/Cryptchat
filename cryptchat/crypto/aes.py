@@ -16,7 +16,6 @@ class AESCipher():
         cipher = AES.new(self.key, AES.MODE_CFB, iv)
         return b64encode(iv + cipher.encrypt(m)).decode('utf8')
 
-
     def decrypt(self, c):
         c = b64decode(c)
         iv = c[:AES.block_size]
