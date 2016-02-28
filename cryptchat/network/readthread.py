@@ -19,4 +19,4 @@ class ReadThread(threading.Thread):
         while True:
             m = self.connection.recv(RECV_BUFFER).decode("utf8")
             if len(m) > 0:
-                self.networkhandler.receive(m)
+                self.networkhandler.putmessage(m)

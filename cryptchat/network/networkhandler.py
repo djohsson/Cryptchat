@@ -6,16 +6,16 @@ import sys
 from threading import Semaphore, Condition, Thread
 from .readthread import ReadThread
 from .writethread import WriteThread
+from ..crypto.aes import AESCipher
 
 
 class NetworkHandler():
 
-    def __init__(self, address, port, servermode, dh, cipher):
+    def __init__(self, address, port, servermode, dh):
         self.address = address
         self.port = port
         self.servermode = servermode
         self.dh = dh
-        self.cipher = cipher
 
         self.in_message = []
         self.in_condition = Condition()
@@ -25,14 +25,13 @@ class NetworkHandler():
         self.out_condition = Condition()
         self.out_sem = Semaphore(0)
 
+        self.exchangedkeys = False
         self.starter = NetworkStarter(self)
-        #self.exchangekeys()
 
     def start(self):
         self.starter.start()
 
     def initialize(self):
-
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         if self.servermode:
             self.socket.bind((self.address, self.port))
@@ -42,12 +41,14 @@ class NetworkHandler():
             self.socket.connect((self.address, self.port))
             self.connection = self.socket
 
+        self.exchangekeys()
+
         self.readthread = ReadThread(self, self.connection)
         self.writethread = WriteThread(self, self.connection)
         self.writethread.start()
         self.readthread.start()
 
-    def receive(self, c):
+    def putmessage(self, c):
         '''
         Called by readthread
         '''
@@ -58,27 +59,29 @@ class NetworkHandler():
         self.in_condition.notifyAll()
         self.in_condition.release()
 
-    def getinmessage(self):
+    def receive(self):
         '''
         Called by user interface
         '''
-        self.in_sem.acquire()
-        self.in_condition.acquire()
-        m = self.in_message.pop(0)
-        self.in_condition.notifyAll()
-        self.in_condition.release()
-        return m
+        if self.exchangedkeys:
+            self.in_sem.acquire()
+            self.in_condition.acquire()
+            m = self.in_message.pop(0)
+            self.in_condition.notifyAll()
+            self.in_condition.release()
+            return m
 
     def send(self, m):
         '''
         Called by user interface
         '''
-        self.out_condition.acquire()
-        c = self.cipher.encrypt(m)
-        self.out_message.append(c)
-        self.out_sem.release()
-        self.out_condition.notifyAll()
-        self.out_condition.release()
+        if self.exchangedkeys:
+            self.out_condition.acquire()
+            c = self.cipher.encrypt(m)
+            self.out_message.append(c)
+            self.out_sem.release()
+            self.out_condition.notifyAll()
+            self.out_condition.release()
 
     def getoutmessage(self):
         '''
@@ -92,11 +95,11 @@ class NetworkHandler():
         return c
 
     def exchangekeys(self):
-        #TODO
-        #self.send(key)
-        #b = self.receive(key)
-        #sessionkey = dh.gensessionkey(b)
-        return
+        self.connection.send(bytes(self.dh.getpublickey(), "utf8"))
+        bobkey = int(self.connection.recv(2048).decode("utf8"))
+        sessionkey = self.dh.gensessionkey(bobkey)
+        self.cipher = AESCipher(sessionkey)
+        self.exchangedkeys = True
 
 class NetworkStarter(Thread):
     def __init__(self, net):
