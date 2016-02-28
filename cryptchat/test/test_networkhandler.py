@@ -5,32 +5,29 @@
 
 import unittest
 from ..network.networkhandler import NetworkHandler
-from ..crypto.aes import AESCipher
 from ..crypto.diffiehellman import DiffieHellman
 
 
 class testNetworkHandler(unittest.TestCase):
     @classmethod
-    def setUpClass(self):
+    def setUpClass(cls):
         alice = DiffieHellman()
         bob = DiffieHellman()
         a = alice.gensessionkey(bob.publickey)
         b = bob.gensessionkey(alice.publickey)
 
-        aes1 = AESCipher(a)
-        aes2 = AESCipher(b)
+        cls.server = NetworkHandler("localhost", 8090, True, alice)
+        cls.client = NetworkHandler("localhost", 8090, False, bob)
+        cls.server.start()
+        cls.client.start()
 
-        self.server = NetworkHandler("localhost", 8090, True, alice, aes1)
-        self.client = NetworkHandler("localhost", 8090, False, bob, aes2)
-
+        while not cls.server.exchangedkeys: # Now this is some good code. It works though....
+            pass
 
     def test_sendmessage(self):
-        self.server.start()
-        self.client.start()
-
         m = "This is secret please do not read. And some chars to get unicode-testing out of the way åäö"
         self.client.send(m)
-        m2 = self.server.getinmessage()
+        m2 = self.server.receive()
         self.assertEqual(m, m2)
 
 def main():
