@@ -6,7 +6,6 @@ import sys
 from threading import Semaphore, Condition, Thread
 from .readthread import ReadThread
 from .writethread import WriteThread
-from .testthread import TestThread
 
 
 class NetworkHandler():
@@ -26,9 +25,7 @@ class NetworkHandler():
         self.out_condition = Condition()
         self.out_sem = Semaphore(0)
 
-        self.threads = []
         self.starter = NetworkStarter(self)
-
         #self.exchangekeys()
 
     def start(self):
@@ -47,14 +44,8 @@ class NetworkHandler():
 
         self.readthread = ReadThread(self, self.connection)
         self.writethread = WriteThread(self, self.connection)
-        self.threads.append(self.writethread)
-        self.threads.append(self.readthread)
         self.writethread.start()
         self.readthread.start()
-
-    def stop(self):
-        for thread in self.threads:
-            thread.stop()
 
     def receive(self, c):
         '''

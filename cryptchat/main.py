@@ -5,7 +5,6 @@ import sys
 from crypto.diffiehellman import DiffieHellman
 from crypto.aes import AESCipher
 from network.networkhandler import NetworkHandler
-import network.client as client
 
 
 def main():
@@ -42,10 +41,6 @@ def main():
     client.send(m)
     m2 = server.getinmessage()
     print("Decrypted: " + m2)
-
-    client.stop()
-    server.stop()
-
 
 if __name__ == "__main__":
     main()

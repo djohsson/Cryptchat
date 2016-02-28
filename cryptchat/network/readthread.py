@@ -13,7 +13,6 @@ class ReadThread(threading.Thread):
         super(ReadThread, self).__init__()
         self.networkhandler = networkhandler
         self.connection = connection
-        self._stop = threading.Event()
         self.setDaemon(True)
 
     def run(self):
@@ -21,6 +20,3 @@ class ReadThread(threading.Thread):
             m = self.connection.recv(RECV_BUFFER).decode("utf8")
             if len(m) > 0:
                 self.networkhandler.receive(m)
-
-    def stop(self):
-        self._stop.set()
