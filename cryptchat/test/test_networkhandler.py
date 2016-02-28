@@ -10,8 +10,8 @@ from ..crypto.diffiehellman import DiffieHellman
 
 
 class testNetworkHandler(unittest.TestCase):
-
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         alice = DiffieHellman()
         bob = DiffieHellman()
         a = alice.gensessionkey(bob.publickey)
@@ -32,11 +32,6 @@ class testNetworkHandler(unittest.TestCase):
         self.client.send(m)
         m2 = self.server.getinmessage()
         self.assertEqual(m, m2)
-
-
-    def tearDown(self):
-        self.server.stop()
-        self.client.stop()
 
 def main():
     unittest.main()
