@@ -4,10 +4,8 @@
 import socket
 import threading
 
-RECV_BUFFER = 2048
 
 class WriteThread(threading.Thread):
-    global RECV_BUFFER
 
     def __init__(self, networkhandler, connection):
         self.connection = connection
