@@ -52,6 +52,9 @@ class DiffieHellman():
             print("Group is not valid, returning value for group '%d'" % standardgroup)
             return keysizes[standardgroup]
 
+    def getpublickey(self):
+        return str(self.publickey)
+
     def genprivatekey(self):
         randbits = 0
         while randbits.bit_length() < self.keysize:
@@ -63,7 +66,7 @@ class DiffieHellman():
 
     def gensessionkey(self, bobkey):
         secretkey = str(pow(bobkey, self.privatekey, self.prime))
-        secretkey = secretkey.encode('utf-8')
+        secretkey = secretkey.encode('utf8')
         h = hashlib.sha256()
         h.update(secretkey)
         m = h.digest()
