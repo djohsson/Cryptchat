@@ -66,7 +66,7 @@ class DiffieHellman():
 
     def gensessionkey(self, bobkey):
         secretkey = str(pow(bobkey, self.privatekey, self.prime))
-        secretkey = secretkey.encode('utf8')
+        secretkey = secretkey.encode("utf8")
         h = hashlib.sha256()
         h.update(secretkey)
         m = h.digest()
