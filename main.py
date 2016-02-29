@@ -26,29 +26,14 @@ def main():
 
     alice = DiffieHellman()
     bob = DiffieHellman()
-    #a = alice.gensessionkey(bob.publickey)
-    #b = bob.gensessionkey(alice.publickey)
-
-    #aes1 = AESCipher(a)
-    #aes2 = AESCipher(b)
-
     server = NetworkHandler("localhost", 8089, True, alice)
     client = NetworkHandler("localhost", 8089, False, bob)
-
     server.start()
     client.start()
 
-    s = input()
-
     client.send("Detta borde krypteras")
     m = server.receive()
-
     print(m)
-
-    #m = "Secret stuff do not read"
-    #client.send(m)
-    #m2 = server.getinmessage()
-    #print("Decrypted: " + m2)
 
 if __name__ == "__main__":
     main()

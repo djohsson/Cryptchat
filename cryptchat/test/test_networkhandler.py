@@ -21,9 +21,6 @@ class testNetworkHandler(unittest.TestCase):
         cls.server.start()
         cls.client.start()
 
-        while not cls.server.exchangedkeys: # Now this is some good code. It works though....
-            pass
-
     def test_sendmessage(self):
         m = "This is secret please do not read. And some chars to get unicode-testing out of the way åäö"
         self.client.send(m)
@@ -33,5 +30,5 @@ class testNetworkHandler(unittest.TestCase):
 def main():
     unittest.main()
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
