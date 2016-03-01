@@ -21,10 +21,16 @@ class testNetworkHandler(unittest.TestCase):
         cls.server.start()
         cls.client.start()
 
-    def test_sendmessage(self):
+    def test_sendmessagetoserver(self):
         m = "This is secret please do not read. And some chars to get unicode-testing out of the way åäö"
         self.client.send(m)
         m2 = self.server.receive()
+        self.assertEqual(m, m2)
+
+    def test_sendmessagetoclient(self):
+        m = "This is secret please do not read. And some chars to get unicode-testing out of the way åäö"
+        self.server.send(m)
+        m2 = self.client.receive()
         self.assertEqual(m, m2)
 
 def main():
