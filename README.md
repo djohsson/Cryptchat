@@ -1,5 +1,7 @@
 # Cryptchat
 
+[![Build Status](https://travis-ci.org/djohsson/Cryptchat.svg?branch=master)](https://travis-ci.org/djohsson/Cryptchat)
+
 Work in progress.
 
 Also, this will not be safe to use even when it is finished.
