@@ -47,16 +47,17 @@ class NetworkHandler():
         self.writethread.start()
         self.readthread.start()
 
-    def putmessage(self, c):
+    def send(self, m):
         '''
-        Called by readthread
+        Called by user interface
         '''
-        self.in_condition.acquire()
-        m = self.cipher.decrypt(c)
-        self.in_message.append(m)
-        self.in_sem.release()
-        self.in_condition.notifyAll()
-        self.in_condition.release()
+        self.exchangedkeys.wait()
+        self.out_condition.acquire()
+        c = self.cipher.encrypt(m)
+        self.out_message.append(c)
+        self.out_sem.release()
+        self.out_condition.notifyAll()
+        self.out_condition.release()
 
     def receive(self):
         '''
@@ -70,17 +71,16 @@ class NetworkHandler():
         self.in_condition.release()
         return m
 
-    def send(self, m):
+    def putmessage(self, c):
         '''
-        Called by user interface
+        Called by readthread
         '''
-        self.exchangedkeys.wait()
-        self.out_condition.acquire()
-        c = self.cipher.encrypt(m)
-        self.out_message.append(c)
-        self.out_sem.release()
-        self.out_condition.notifyAll()
-        self.out_condition.release()
+        self.in_condition.acquire()
+        m = self.cipher.decrypt(c)
+        self.in_message.append(m)
+        self.in_sem.release()
+        self.in_condition.notifyAll()
+        self.in_condition.release()
 
     def getoutmessage(self):
         '''
